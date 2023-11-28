@@ -1,113 +1,212 @@
-# sam-data-producer-lambda
+<!-- <img src="https://github.com/catherineisonline/advice-generator-app-frontendmentor/blob/main/images/project-preview.png?raw=true"></img> -->
 
-This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
+<h1 align="center">Ecommerce price automation</h1>
 
-- hello_world - Code for the application's Lambda function and Project Dockerfile.
-- events - Invocation events that you can use to invoke the function.
-- tests - Unit tests for the application code. 
-- template.yaml - A template that defines the application's AWS resources.
+<div align="center">
+   Web scrapping of competitors prices via ecommerce website API and updating price dynamically following business rules based on schedules, time winning and minimum prices with AWS Lambda.
+</div>
+<br>
 
-The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
+## About The Project
 
-## Deploy the sample application
+<p>A simple project if you're learning how to interact with 3rd-party APIs. This project uses the Mercado Libre API to scrape the user products and
+its competitors publications. The purpose is to build an optimization algorithm that updates the prices of the user publications based on the competitors 
+prices in order to obtain the "Winner" status in each corresponding publication as long as possible during the day. The solution followed a free tier approach, trying not to exceed free quotas of different services like Google Sheet API, Lambda, etc.
+<p>
+   
+<br>
+Users should be able to: <br>
+<br>
+1. Automatically execute a price update following business rules such as being below or above certain competitor price, based on a fixed amount or percentage of the competitor price.
+<br>
+2. Obtain event logs for each result of the optimizer of each publication in order to know if the user won the publication, at what cost and the reasons.
+<br>
+3. Modify manually in a Google Spreadsheet the parameters of the optimizer.
+<br>
+4. Analyze time ranges with more difficulty to win publications and competitors behaviours.
+<br> 
+5. Test and pause the optimizer via AWS Lambda console.
+<br>
+6. Use minimum price of different stock batches when a certain level of stock is reached.
+<br>
+7. Execute the optimizer in more than one Mercado Libre account.
+<br>
+8. Add new publications to follow its performance and optimize its price.
+<br>
 
-The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds functionality for building and testing Lambda applications. It uses Docker to run your functions in an Amazon Linux environment that matches Lambda. It can also emulate your application's build environment and API.
+## Built with 
 
-To use the SAM CLI, you need the following tools.
+- IDE: Visual Studio Code
+- Programming Language: Python 3.10
+- Docker
+- Postman
+- Github
+- AWS Secrets Manager, Elastic Container Registry, CloudFormation, Lambda, EventBridge and S3.
 
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-* Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
+## Useful resources
 
-You may need the following for local testing.
-* [Python 3 installed](https://www.python.org/downloads/)
+1. <a href="https://developers.mercadolibre.com.ar/devcenter">MercadoLibre Dev Center</a> - Ecommerce developer website for built in apps.
+2. <a href="https://developers.mercadolibre.com.ar/es_ar/api-docs-es">MercadoLibre API Docs</a> - API Endpoints, code snippets, quickstart guide, auth guide and example responses.
+3. <a href="https://docs.docker.com/get-started/">Docker Documentation</a> - Getting Started, etc.
+4. <a href="https://docs.aws.amazon.com/lambda/latest/dg/python-package.html#python-package-create-dependencies">AWS Lambda Documentation</a> - To create the deployment package (virtual environment).
+5. <a href="https://stackoverflow.com/questions/68206078/how-to-use-dependencies-in-sam-local-environment"> Dependencies in SAM</a> - Running a function with library and module imports locally.
+6. <a href="https://www.youtube.com/watch?v=jXjMrWCpaI8&ab_channel=FelixYu">AWS Lambda Layers Introduction</a> - Instruction on how to create lambda layers with pandas and requests using docker.
+7. <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-invoke.html">AWS Serverless SAM CLI</a> - Serverless SAM CLI using invoke.
+8. <a href="https://aws.amazon.com/es/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all">AWS Pricing</a> - AWS Free Tier for costs calculation.
+9. <a href="https://developers.google.com/sheets/api/limits?hl=es-419">Google API Limits</a> - Google Free Tier for costs calculation.
+10. <a href="https://crontab.guru">Crontab guru></a> - Quick and simple editor for cron schedule expressions.
+   
+## Previous steps and installations needed
 
-To build and deploy your application for the first time, run the following in your shell:
+1. Install Visual Studio Code
+2. Install Python 3.10
+3. Install libraries used
+4. Install AWS CLI
+5. Install Docker
+6. Install WSL
+7. Install Ubuntu
+8. Create a Service Account in Google
+9. Download Google Sheets API credentials
+10. Store Google Sheets API credentials on AWS Secrets Manager
+11. Share Google Spreadsheet with the Google Service Account email
+12. Create a AWS Lambda Function via AWS CLI with CloudFormation
 
-```bash
-sam build
-sam deploy --guided
+## Difficulties found and learnings:
+
+1. The PUT requests of the price update were instantly, but the impact on the status of competing in the publication had a delay of ~5 minutes, so the optimizer should sleep for 5 minutes in order to execute again and check the status on the publication with the new price. Besides, the lambda function has a timeout of 15 minutes, so the optimizer could not exceed 3 loops. The code was changed to run just one iteration on checking and updating the price and the frequency of the lambda function was increased, instead of having an unnecessary sleep in the code.
+2. AWS Lambda function supports up to 50 MB of size for the option of dropping a zip file with the lambda_hanlder file and extra files desired. As my dependencies installed had a superior size of 50 MB I found two possible options to overcome this:
+- Upload the zip file with the dependencies package and the lambda_function.py in an S3 bucket and then linked the lambda code to the S3 bucket URL. This option allows up to 250 Mb of unzipped files.
+- This solution appeared when the previous solution became useless when I tried to install new libraries and summed a total of more than 250 Mb of unzipped files. You can create a deployment package with the dependencies and the lambda function code in a container image and create a lambda function from a container image. In this case you will need to create a repository in Elastic Container Registry (ECR), create an image with Docker and push the image with AWS CLI. This option lets you upload up to 10 GB unzipped files.
+  
+4. Be sure to be creating the AWS Lambda function in the same time zone, the same operating system environment (runtime) and programming language version that the AWS Secrets Manager and Eventbirdge are configured in.
+5. Installing libraries in a Windows environment brought a constant problem of module imports in the python file that made they were not recognized when deploying it in AWS.
+
+- I could have solved the module imports problem by running a docker container of AmazonLinux in my IDE (Docker must be opened in the computer) but the problem was that by default the libraries were installed in python3.7 and my code was written in python3.9, so one solution could have been adapting my code to python3.7. I could not install a newer version of python in the docker container because I did not have the Unix native command "sudo" for installations.
+- I tried to run a AmazonLinux2 in EC2 instance with PuTTY in my computer with Windows (had to create a key file .ppm and give access in IAM to EC2) and have no success neither.
+- The solution I found was to install a Linux environment and run my libraries installations in a virtual environment in Ubuntu. With Ubuntu I could run the sudo apt command and zip -r to create the deployment package in a zip file with libraries installed in Linux.
+
+**TL/DR**:
+
+The python code of the lambda function is containerized with its packages in a docker image, pushed to ECR and attached to the Lambda function. The lambda function is executed by an EventBridge trigger every X minutes predefined on AWS console.
+
+## Costs considerations
+
+1. Google API has a limit of 60 API calls per minute (for each writing and reading), so in order to avoid exceeding the rate, I needed a rate limiting when reading parameters from the Google Sheets and writing cells for the logs. I solved the rate limiting with a “Exponential backoff retry” algorithm from the APIError module of Gspread library and with a Time-to-live cache limiting (TTL Cache).
+2. AWS Secrets Manager charges you 0,4 USD/month for each pair of key-secret stored in the vault.
+3. Lambda is free below the 1 million calls per month. The client has a cost calculator that shows how many publications can be scrapped with the defined frequency of executing of the lambda in order to keep the free quota of Lambda. Once exceeded, Lambda charges you 0,0000002 USD for each additional call.
+4. S3 lets you stored files up to 5 GB during 12 months for free.
+
+## Getting started
+
+Mercado Libre App:
+1. Log in with your account on https://developers.mercadolibre.com.ar/devcenter and create an application. You will need a logo photo and a redirect URL for your app.
+2. In the configuration you should select all API scopes desired to access with that account. Select read, offline access and write.
+3. Once created, enter to the app and copy the App ID and Client Secret. This values will be used to generate an access token to make calls to the Mercado Libre API.
+4. In a browser enter the following URL replacing the value with your app ID and URL: https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id={YOUR_APP_ID}&redirect_uri={YOUR_APP_URL}.
+5. The browser should redirect you to the website of the URL, in the search bar a new URL is generated, you should copy the code that follows the "TG". This code is a refresh token that expires every 6 hours and you can generate with an API call. The refresh token is needed to generate an access token that expires with the refresh token. So when 6 hours have passed, you need to generate both, refresh token and access token.
+
+Create a deployment package of dependencies in Ubuntu:
+1. Initialize Ubuntu with the command "Ubuntu". Then install python version of your lambda function and pip.
+2. Locate your directory with the python file and create a venv to install libraries. To locate your python lambda file that is in your PC you need to change directory (cd..) until you get to the "/" directory. Check the directory with "pwd" command. Once in "/" directory, do a "ls" to list the items in that directory. You should go to "mnt", your disk ("c" in my case), Users, your PC user and then go to the directory where you have your python file.
+3. For the creation of the virutal environment (Ubuntu):
+- python3 -m venv venv
+- source source ./venv/bin/activate (venv/Scripts/activate on Windows)
+- install -r requirements.txt
+- cd venv/lib/python3.10/site-packages
+- deactivate
+- zip -r ../../../deployment_package.zip .
+
+Build and deploy a container image in ECR:
+1. Ensure you have create an access key in your IAM user. Copy the access key and secret access key.
+2. Execute 'aws configure' in order to log in to your AWS account entering the access key, secret access key and aws region.
+3. Create the requirements.txt file with the python packages names and versions (optional).
+4. Create the lambda_function.py at folder level.
+5. Create the lambda-image.dockerfile with the following instructions:
+```
+FROM public.ecr.aws/lambda/python:3.10
+
+COPY requirements.txt ./
+RUN python3.10 -m pip install -r requirements.txt -t .
+
+COPY lambda_function.py ./
+
+CMD ["lambda_function.lambda_handler"]
 ```
 
-The first command will build a docker image from a Dockerfile and then copy the source of your application inside the Docker image. The second command will package and deploy your application to AWS, with a series of prompts:
-
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
-* **AWS Region**: The AWS region you want to deploy your app to.
-* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
-
-You can find your API Gateway Endpoint URL in the output values displayed after deployment.
-
-## Use the SAM CLI to build and test locally
-
-Build your application with the `sam build` command.
-
-```bash
-sam-data-producer-lambda$ sam build
+6. Execute the following commands, replacing with you image name, aws region, dockerfile name, tag name and ECR repository URI:
+```
+aws ecr get-login-password --region <your-aws-region> | docker login --username AWS --password-stdin <your-ECR-repo-URI>
+docker build -t <your-image-name> -f <your-dockerfile-name>.dockerfile .
+docker tag <your-image-name>:<your-tag-name> <your-ECR-repo-URI>:<your-tag-name>
+docker push  <your-ECR-repo-URI>:<your-tag-name>
 ```
 
-The SAM CLI builds a docker image from a Dockerfile and then installs dependencies defined in `hello_world/requirements.txt` inside the docker image. The processed template file is saved in the `.aws-sam/build` folder.
+IAM policies needed:
+1. Secrets Manager Read and Write secret keys: attach a policy of ReadWrite for the Lambda role in order to access the SecretsManager service and retrieve the secrets values.
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue",
+                "kms:Decrypt"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:<your-aws-region>:<your-aws-account-id>:secret:<your-first-secret-name>",
+                "arn:aws:secretsmanager:<your-aws-region>:<your-aws-account-id>:secret:<your-second-secret-name>"
+            ]
+        }
+    ]
+}
+```
+3. ECR Put and Get images: create and attach a inline policy with the following JSON for the Lambda role to be able to get images of the ECR repo:
 
-Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
-
-Run functions locally and invoke them with the `sam local invoke` command.
-
-```bash
-sam-data-producer-lambda$ sam local invoke HelloWorldFunction --event events/event.json
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGetImage",
+                "ecr:GetRepositoryPolicy",
+                "ecr:ListImages",
+                "ecr:PutImage",
+                "ecr:DescribeImages",
+                "ecr:DescribeRepositories",
+                "ecr:GetLifecyclePolicyPreview",
+                "ecr:GetLifecyclePolicy"
+            ],
+            "Resource": "arn:aws:ecr:<your-aws-region>:<your-aws-account-id>:repository/<your-ecr-repo-name>"
+        }
+    ]
+}
+```
+3. OpenSearch Get and Put documents:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "es:ESHttpGet",
+                "es:ESHttpPut",
+                "es:ESHttpHead",
+                "es:ESHttpGet"
+            ],
+            "Resource": "arn:aws:es:<your-aws-region>:<your-aws-account-id>:domain/<your-domain-name>"
+        }
+    ]
+}
 ```
 
-The SAM CLI can also emulate your application's API. Use the `sam local start-api` to run the API locally on port 3000.
 
-```bash
-sam-data-producer-lambda$ sam local start-api
-sam-data-producer-lambda$ curl http://localhost:3000/
-```
+## Acknowledgments
 
-The SAM CLI reads the application template to determine the API's routes and the functions that they invoke. The `Events` property on each function's definition includes the route and method for each path.
-
-```yaml
-      Events:
-        HelloWorld:
-          Type: Api
-          Properties:
-            Path: /hello
-            Method: get
-```
-
-## Add a resource to your application
-The application template uses AWS Serverless Application Model (AWS SAM) to define application resources. AWS SAM is an extension of AWS CloudFormation with a simpler syntax for configuring common serverless application resources such as functions, triggers, and APIs. For resources not included in [the SAM specification](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md), you can use standard [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html) resource types.
-
-## Fetch, tail, and filter Lambda function logs
-
-To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs` lets you fetch logs generated by your deployed Lambda function from the command line. In addition to printing the logs on the terminal, this command has several nifty features to help you quickly find the bug.
-
-`NOTE`: This command works for all AWS Lambda functions; not just the ones you deploy using SAM.
-
-```bash
-sam-data-producer-lambda$ sam logs -n HelloWorldFunction --stack-name "sam-data-producer-lambda" --tail
-```
-
-You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
-
-## Unit tests
-
-Tests are defined in the `tests` folder in this project. Use PIP to install the [pytest](https://docs.pytest.org/en/latest/) and run unit tests from your local machine.
-
-```bash
-sam-data-producer-lambda$ pip install pytest pytest-mock --user
-sam-data-producer-lambda$ python -m pytest tests/ -v
-```
-
-## Cleanup
-
-To delete the sample application that you created, use the AWS CLI. Assuming you used your project name for the stack name, you can run the following:
-
-```bash
-sam delete --stack-name "sam-data-producer-lambda"
-```
-
-## Resources
-
-See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.
-
-Next, you can use AWS Serverless Application Repository to deploy ready to use Apps that go beyond hello world samples and learn how authors developed their applications: [AWS Serverless Application Repository main page](https://aws.amazon.com/serverless/serverlessrepo/)
+Matias Kahnlein - Caylent DevOps
