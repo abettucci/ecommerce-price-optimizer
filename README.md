@@ -97,10 +97,6 @@ This project contains source code and supporting files for a serverless applicat
 - I tried to run a AmazonLinux2 in EC2 instance with PuTTY in my computer with Windows (had to create a key file .ppm and give access in IAM to EC2) and have no success neither.
 - The solution I found was to install a Linux environment and run my libraries installations in a virtual environment in Ubuntu. With Ubuntu I could run the sudo apt command and zip -r to create the deployment package in a zip file with libraries installed in Linux.
 
-**TL/DR**:
-
-The python code of the lambda function is containerized with its packages in a docker image, pushed to ECR and attached to the Lambda function. The lambda function is executed by an EventBridge trigger every X minutes predefined on AWS console.
-
 ## Costs considerations
 
 1. Google API has a limit of 60 API calls per minute (for each writing and reading), so in order to avoid exceeding the rate, I needed a rate limiting when reading parameters from the Google Sheets and writing cells for the logs. I solved the rate limiting with a “Exponential backoff retry” algorithm from the APIError module of Gspread library and with a Time-to-live cache limiting (TTL Cache).
@@ -227,6 +223,9 @@ sam-data-producer-lambda$ sam local invoke HelloWorldFunction --event events/eve
 }
 ```
 
+## TL/DR:
+
+The python code of the lambda function is containerized with its dependencies in a docker image, pushed to ECR and attached to the Lambda function. The lambda function is executed by an EventBridge trigger every X minutes predefined on AWS console.
 
 ## Acknowledgments
 
