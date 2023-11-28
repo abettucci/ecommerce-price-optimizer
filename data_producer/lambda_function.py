@@ -15,7 +15,7 @@ import json
 # from botocore.exceptions import ClientError
 # from opensearchpy import OpenSearch
 
-def lambda_handler(event, context):
+def lambda_handler(): # event, context
 
     # Price optimizer function here
 
