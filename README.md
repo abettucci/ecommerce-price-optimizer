@@ -42,6 +42,7 @@ This project contains source code and supporting files for a serverless applicat
 - Makefile - Automating software building procedure and other tasks with dependencies.
 - tests - Unit tests for the application code. 
 - template.yaml - A template that defines the application's AWS resources. There is no events folder as the event is defined as a cron schedule in the template.yaml
+- buildspec.yaml - Github Actions workflow for installing dependencies, linting, testing and formatting code. 
 
 ## Built with 
 
