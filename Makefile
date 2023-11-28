@@ -1,11 +1,11 @@
 install:
 	pip install --upgrade pip &&\
-		pip install -r requirements.txt	
+		pip install -r data_producer/requirements.txt	
 
 format:
-	black *.py
+	black data_producer/*.py
 
 lint:
-	pylint --disable=R,C *.py
+	pylint --disable=R,C data_producer/*.py
 
 all: install lint format
