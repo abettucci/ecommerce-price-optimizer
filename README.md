@@ -34,6 +34,15 @@ Users should be able to: <br>
 8. Add new publications to follow its performance and optimize its price.
 <br>
 
+## Files
+
+This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
+
+- data_producer - Code for the application's Lambda function and Project Dockerfile.
+- Makefile - Automating software building procedure and other tasks with dependencies.
+- tests - Unit tests for the application code. 
+- template.yaml - A template that defines the application's AWS resources. There is no events folder as the event is defined as a cron schedule in the template.yaml
+
 ## Built with 
 
 - IDE: Visual Studio Code
@@ -41,7 +50,9 @@ Users should be able to: <br>
 - Docker
 - Postman
 - Github
-- AWS Secrets Manager, Elastic Container Registry, CloudFormation, Lambda, EventBridge and S3.
+- AWS Secrets Manager, Elastic Container Registry, Lambda, EventBridge and S3.
+- AWS SAM (Necessesary to run and deploy)
+
 
 ## Useful resources
 
@@ -98,14 +109,14 @@ The python code of the lambda function is containerized with its packages in a d
 
 ## Getting started
 
-Mercado Libre App:
+**Mercado Libre App:**
 1. Log in with your account on https://developers.mercadolibre.com.ar/devcenter and create an application. You will need a logo photo and a redirect URL for your app.
 2. In the configuration you should select all API scopes desired to access with that account. Select read, offline access and write.
 3. Once created, enter to the app and copy the App ID and Client Secret. This values will be used to generate an access token to make calls to the Mercado Libre API.
 4. In a browser enter the following URL replacing the value with your app ID and URL: https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id={YOUR_APP_ID}&redirect_uri={YOUR_APP_URL}.
 5. The browser should redirect you to the website of the URL, in the search bar a new URL is generated, you should copy the code that follows the "TG". This code is a refresh token that expires every 6 hours and you can generate with an API call. The refresh token is needed to generate an access token that expires with the refresh token. So when 6 hours have passed, you need to generate both, refresh token and access token.
 
-Create a deployment package of dependencies in Ubuntu:
+**Create a deployment package of dependencies in Ubuntu:**
 1. Initialize Ubuntu with the command "Ubuntu". Then install python version of your lambda function and pip.
 2. Locate your directory with the python file and create a venv to install libraries. To locate your python lambda file that is in your PC you need to change directory (cd..) until you get to the "/" directory. Check the directory with "pwd" command. Once in "/" directory, do a "ls" to list the items in that directory. You should go to "mnt", your disk ("c" in my case), Users, your PC user and then go to the directory where you have your python file.
 3. For the creation of the virutal environment (Ubuntu):
@@ -116,7 +127,7 @@ Create a deployment package of dependencies in Ubuntu:
 - deactivate
 - zip -r ../../../deployment_package.zip .
 
-Build and deploy a container image in ECR:
+**Build and deploy a container image in ECR**:
 1. Ensure you have create an access key in your IAM user. Copy the access key and secret access key.
 2. Execute 'aws configure' in order to log in to your AWS account entering the access key, secret access key and aws region.
 3. Create the requirements.txt file with the python packages names and versions (optional).
@@ -132,7 +143,6 @@ COPY lambda_function.py ./
 
 CMD ["lambda_function.lambda_handler"]
 ```
-
 6. Execute the following commands, replacing with you image name, aws region, dockerfile name, tag name and ECR repository URI:
 ```
 aws ecr get-login-password --region <your-aws-region> | docker login --username AWS --password-stdin <your-ECR-repo-URI>
@@ -141,7 +151,17 @@ docker tag <your-image-name>:<your-tag-name> <your-ECR-repo-URI>:<your-tag-name>
 docker push  <your-ECR-repo-URI>:<your-tag-name>
 ```
 
-IAM policies needed:
+**To build and deploy your application for the first time, run the following in your shell:**
+```bash
+sam build
+sam deploy --guided
+```
+**Run functions locally and invoke them:**
+```bash
+sam-data-producer-lambda$ sam local invoke HelloWorldFunction --event events/event.json
+```
+
+**IAM policies needed**:
 1. Secrets Manager Read and Write secret keys: attach a policy of ReadWrite for the Lambda role in order to access the SecretsManager service and retrieve the secrets values.
 ```
 {
