@@ -67,6 +67,7 @@ This project contains source code and supporting files for a serverless applicat
 8. <a href="https://aws.amazon.com/es/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all">AWS Pricing</a> - AWS Free Tier for costs calculation.
 9. <a href="https://developers.google.com/sheets/api/limits?hl=es-419">Google API Limits</a> - Google Free Tier for costs calculation.
 10. <a href="https://crontab.guru">Crontab guru</a> - Quick and simple editor for cron schedule expressions.
+11. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#fielddata-mapping-param">ElasticSearch Doc>/a> - Mapping documentation for ElasticSearch.
    
 ## Previous steps and installations needed
 
@@ -165,9 +166,10 @@ sam-data-producer-lambda$ sam local invoke HelloWorldFunction --event events/eve
 1. Create a domain in Amazon OpenSearch Service.
 2. Create a username and password for the URL endpoint.
 3. Enter to the OpenSearch Dashboards URL (IPv4).
-4. Go to Interact with the OpenSearch API and create an index with the data schema (aka "mapping") of your data being inputed:
+4. Create an index on the Index Management/Index tab or make a POST request with option 5.
+5. Go to Interact with the OpenSearch API and update the index data schema (aka "mapping") of your data being inputed:
 ```JSON
-PUT /<your-index-name>
+PUT /your-index-name
 {
   "mappings": {
     "properties": {
@@ -195,6 +197,11 @@ PUT /<your-index-name>
   }
 }
 ```
+
+If your string field has spaces in between, this is, not a continuous string, you should use the type "keyword" in order to use the string as it is and avoid getting the string splitted. Check: https://discuss.elastic.co/t/fields-not-displaying-in-visualize/133501.
+
+5. Create an index pattern on the Dashboard Management/Index patterns tab.
+6. Go to Visualize tab, choose a visual and find the Index pattern you created to use as your data input.
 
 **IAM policies needed**:
 1. Secrets Manager Read and Write secret keys: attach a policy of ReadWrite for the Lambda role in order to access the SecretsManager service and retrieve the secrets values.
