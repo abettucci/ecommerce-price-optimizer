@@ -1,16 +1,16 @@
 <!-- <img src="https://github.com/catherineisonline/advice-generator-app-frontendmentor/blob/main/images/project-preview.png?raw=true"></img> -->
 
-<h1 align="center">Ecommerce price automation</h1>
+<h1 align="center">Ecommerce Price Optimizer</h1>
 
 <div align="center">
-   Web scrapping of competitors prices via ecommerce website API and updating price dynamically following business rules based on schedules, time winning and minimum prices with AWS Lambda.
+   Web scrapping of competitors catalog publication prices via MercadoLibre API and updating price dynamically following business rules based on schedules, time winning and minimum prices with AWS Lambda.
 </div>
 <br>
 
 ## About The Project
 
 <p>A simple project if you're learning how to interact with 3rd-party APIs. This project uses the Mercado Libre API to scrape the user products and
-its competitors publications. The purpose is to build an optimization algorithm that updates the prices of the user publications based on the competitors 
+its competitors publications. The purpose is to build an optimization algorithm that updates the prices of the user catalog publications based on the competitors 
 prices in order to obtain the "Winner" status in each corresponding publication as long as possible during the day. The solution followed a free tier approach, trying not to exceed free quotas of different services like Google Sheet API, Lambda, etc.
 <p>
    
