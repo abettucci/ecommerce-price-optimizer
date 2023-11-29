@@ -19,7 +19,7 @@ Resources:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0/8 * ? * * *)
+            Schedule: cron(0/8 * ? * * *) #the function is triggered every 8 minutes
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./data_producer
