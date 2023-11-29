@@ -67,7 +67,7 @@ This project contains source code and supporting files for a serverless applicat
 8. <a href="https://aws.amazon.com/es/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all">AWS Pricing</a> - AWS Free Tier for costs calculation.
 9. <a href="https://developers.google.com/sheets/api/limits?hl=es-419">Google API Limits</a> - Google Free Tier for costs calculation.
 10. <a href="https://crontab.guru">Crontab guru</a> - Quick and simple editor for cron schedule expressions.
-11. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#fielddata-mapping-param">ElasticSearch Doc>/a> - Mapping documentation for ElasticSearch.
+11. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#fielddata-mapping-param">ElasticSearch Doc</a> - Mapping documentation for ElasticSearch.
    
 ## Previous steps and installations needed
 
