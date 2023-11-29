@@ -6,6 +6,6 @@ format:
 	black data_producer/*.py
 
 lint:
-	pylint --disable=R,C data_producer/*.py
+	pylint --disable=W0613,R,C data_producer/*.py
 
 all: install lint format
