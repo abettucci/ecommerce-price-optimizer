@@ -223,7 +223,7 @@ If your string field has spaces in between, this is, not a continuous string, yo
     ]
 }
 ```
-3. ECR Put and Get images: create and attach a inline policy with the following JSON for the Lambda role to be able to get images of the ECR repo:
+2. ECR Put and Get images: create and attach a inline policy with the following JSON for the Lambda role to be able to get images of the ECR repo:
 
 ```
 {
@@ -268,7 +268,7 @@ If your string field has spaces in between, this is, not a continuous string, yo
 }
 ```
 
-## TL/DR:
+## TL/DR
 
 The python code of the lambda function is containerized with its dependencies in a docker image, pushed to ECR and attached to the Lambda function. The lambda function is executed by an EventBridge trigger every X minutes predefined on AWS console.
 
