@@ -158,7 +158,7 @@ sam deploy --guided
 
 **Run functions locally and invoke them:**
 ```bash
-sam-data-producer-lambda$ sam local invoke HelloWorldFunction --event events/event.json
+folder-name-containing-files$ sam local invoke Function --event events/event.json
 ```
 
 **Create a OpenSearch Dashboard:**
