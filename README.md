@@ -51,7 +51,7 @@ This project contains source code and supporting files for a serverless applicat
 - Docker
 - Postman
 - Github
-- AWS Secrets Manager, Elastic Container Registry, Lambda, EventBridge and S3.
+- AWS Secrets Manager, Elastic Container Registry, Lambda, EventBridge, OpenSearch and S3.
 - AWS SAM (Necessesary to run and deploy)
 
 
@@ -66,7 +66,7 @@ This project contains source code and supporting files for a serverless applicat
 7. <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-invoke.html">AWS Serverless SAM CLI</a> - Serverless SAM CLI using invoke.
 8. <a href="https://aws.amazon.com/es/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all">AWS Pricing</a> - AWS Free Tier for costs calculation.
 9. <a href="https://developers.google.com/sheets/api/limits?hl=es-419">Google API Limits</a> - Google Free Tier for costs calculation.
-10. <a href="https://crontab.guru">Crontab guru></a> - Quick and simple editor for cron schedule expressions.
+10. <a href="https://crontab.guru">Crontab guru</a> - Quick and simple editor for cron schedule expressions.
    
 ## Previous steps and installations needed
 
@@ -103,6 +103,7 @@ This project contains source code and supporting files for a serverless applicat
 2. AWS Secrets Manager charges you 0,4 USD/month for each pair of key-secret stored in the vault.
 3. Lambda is free below the 1 million calls per month. The client has a cost calculator that shows how many publications can be scrapped with the defined frequency of executing of the lambda in order to keep the free quota of Lambda. Once exceeded, Lambda charges you 0,0000002 USD for each additional call.
 4. S3 lets you stored files up to 5 GB during 12 months for free.
+5. OpenSearch free tier is able for a t2.small or t3.small instance in a single Availability Zone (AZ) up to 750 hours of use per month and a EBS (Elastic Block Storage) volume of 10 GB per month.
 
 ## Getting started
 
@@ -153,9 +154,46 @@ docker push  <your-ECR-repo-URI>:<your-tag-name>
 sam build
 sam deploy --guided
 ```
+
 **Run functions locally and invoke them:**
 ```bash
 sam-data-producer-lambda$ sam local invoke HelloWorldFunction --event events/event.json
+```
+
+**Create a OpenSearch Dashboard:**
+
+1. Create a domain in Amazon OpenSearch Service.
+2. Create a username and password for the URL endpoint.
+3. Enter to the OpenSearch Dashboards URL (IPv4).
+4. Go to Interact with the OpenSearch API and create an index with the data schema (aka "mapping") of your data being inputed:
+```JSON
+PUT /<your-index-name>
+{
+  "mappings": {
+    "properties": {
+      "update_date": {
+        "type": "date"
+      },
+      "free_shipping": {
+        "type": "boolean"
+      },
+      "API_calls": {
+        "type": "integer"
+      },
+      "initial_price": {
+        "type": "float"
+      "product_name": {
+        "type": "text"
+      },
+      "stock": {
+        "type": "integer"
+      },
+      "time": {
+        "type": "float"
+      }
+    }
+  }
+}
 ```
 
 **IAM policies needed**:
