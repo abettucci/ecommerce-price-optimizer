@@ -11,32 +11,30 @@
 
 <p>A simple project if you're learning how to interact with 3rd-party APIs. This project uses the Mercado Libre API to scrape the user products and
 its competitors publications. The purpose is to build an optimization algorithm that updates the prices of the user catalog publications based on the competitors 
-prices in order to obtain the "Winner" status in each corresponding publication as long as possible during the day. The solution followed a free tier approach, trying not to exceed free quotas of different services like Google Sheet API, Lambda, etc.
+prices in order to obtain the "Winner" status in each corresponding publication as long as possible during the day. The solution followed a free tier approach, trying to not exceed free quotas of different services like Google Sheet API and AWS Lambda.
 <p>
    
 <br>
 Users should be able to: <br>
 <br>
-1. Automatically execute a price update following business rules such as being below or above certain competitor price, based on a fixed amount or percentage of the competitor price.
+1. Automatically execute a price update following business rules such as being below or above certain competitor price, based on a fixed amount or percentage.
 <br>
 2. Obtain event logs for each result of the optimizer of each publication in order to know if the user won the publication, at what cost and the reasons.
 <br>
 3. Modify manually in a Google Spreadsheet the parameters of the optimizer.
 <br>
 4. Analyze time ranges with more difficulty to win publications and competitors behaviours.
-<br> 
-5. Test and pause the optimizer via AWS Lambda console.
 <br>
-6. Use minimum price of different stock batches when a certain level of stock is reached.
+5. Use minimum price of different stock batches when a certain level of stock is reached.
 <br>
-7. Execute the optimizer in more than one Mercado Libre account.
+6. Execute the optimizer in more than one Mercado Libre account.
 <br>
-8. Add new publications to follow its performance and optimize its price.
+7. Add new publications to follow its performance and optimize its price.
 <br>
 
 ## Files
 
-This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
+This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI from AWS (serverless app command line interface). It includes the following files and folders.
 
 - data_producer - Code for the application's Lambda function and Project Dockerfile.
 - Makefile - Automating software building procedure and other tasks with dependencies.
